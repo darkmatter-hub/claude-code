@@ -2,7 +2,7 @@
 
 Auto-capture every Claude Code action as a verifiable, signed, hash-chained Context Passport record. Hooks into Claude Code's lifecycle so you get a tamper-evident audit trail of every prompt, every tool call, and every assistant turn without changing your application code.
 
-**Built by [DarkMatter](https://darkmatterhub.ai). Implements [Context Passport v1.0](https://contextpassport.com), an open CC0 standard.**
+**Built by [DarkMatter](https://darkmatterhub.ai). Implements [Context Passport v2.0](https://contextpassport.com), an open CC0 standard.**
 
 ## Install
 
@@ -23,10 +23,12 @@ Restart Claude Code. From this point forward every event in every session is aut
 
 | Claude Code event | Hook fired | Context Passport `event.type` | What's in the payload |
 |---|---|---|---|
-| User submits a prompt | `UserPromptSubmit` | `commit` | The prompt text |
-| Claude is about to use a tool | `PreToolUse` | `commit` | Tool name + arguments |
-| Tool returns a result | `PostToolUse` | `commit` | Tool name + result |
+| User submits a prompt | `UserPromptSubmit` | `claude_code.user_prompt` | The prompt text |
+| Claude is about to use a tool | `PreToolUse` | `claude_code.tool_call` | Tool name + arguments |
+| Tool returns a result | `PostToolUse` | `claude_code.tool_result` | Tool name + result |
 | Assistant finishes responding | `Stop` | `checkpoint` | Stop reason or final response summary |
+
+Top-level `event.type` is the discriminator — filter the chain with `jq '.event.type == "claude_code.tool_call"'` to find every tool invocation in a session without traversing nested payload paths.
 
 Every record is:
 - Signed with your Ed25519 key (proves it came from you)
@@ -52,11 +54,11 @@ print('chain intact:', verify_chain(chain))
 "
 ```
 
-Or with the conformance suite:
+Or with the conformance suite (vectors are bundled — no `--vectors-dir` needed):
 
 ```bash
-pip install context-passport-conformance
-context-passport-conformance --vectors-dir ~/.darkmatter/claude-code/sessions/default
+pip install "context-passport-conformance[reference]"
+context-passport-conformance --level signed
 ```
 
 ## Optional: forward to DarkMatter
