@@ -32,7 +32,7 @@ def test_user_prompt_emits_passport(monkeypatch):
     from darkmatter_claude_code import store
     chain = store.read_chain("test-1")
     assert len(chain) == 1
-    assert chain[0]["event"]["type"] == "commit"
+    assert chain[0]["event"]["type"] == "claude_code.user_prompt"
     assert chain[0]["payload"]["input"] == "hello"
 
 
@@ -42,6 +42,8 @@ def test_pre_and_post_tool_use_chain(monkeypatch):
     from darkmatter_claude_code import store
     chain = store.read_chain("test-2")
     assert len(chain) == 2
+    assert chain[0]["event"]["type"] == "claude_code.tool_call"
+    assert chain[1]["event"]["type"] == "claude_code.tool_result"
     assert chain[1]["parent_id"] == chain[0]["id"]
     assert chain[1]["integrity"]["parent_hash"] == chain[0]["integrity"]["integrity_hash"]
 

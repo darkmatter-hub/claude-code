@@ -31,11 +31,15 @@ from context_passport import make_passport
 from . import store, keys
 
 
+# Map each Claude Code lifecycle hook to a top-level event.type that an
+# auditor can filter on without traversing the nested payload. We use
+# namespaced custom types (per SPEC.md §3.3) for the three Claude-Code-
+# specific events and the core 'checkpoint' type for turn boundaries.
 _EVENT_TO_TYPE = {
-    "user":  ("commit",     "user prompt"),
-    "pre":   ("commit",     "pre tool use"),
-    "post":  ("commit",     "post tool use"),
-    "stop":  ("checkpoint", "assistant turn end"),
+    "user":  ("claude_code.user_prompt", "user prompt"),
+    "pre":   ("claude_code.tool_call",   "pre tool use"),
+    "post":  ("claude_code.tool_result", "post tool use"),
+    "stop":  ("checkpoint",              "assistant turn end"),
 }
 
 
