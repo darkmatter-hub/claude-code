@@ -23,7 +23,7 @@ Verify offline at any time:
     "
 
 Built by DarkMatter (https://darkmatterhub.ai). Implements
-Context Passport v1.0 (https://contextpassport.com).
+Context Passport v2.0 (https://contextpassport.com).
 """
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
