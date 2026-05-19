@@ -26,4 +26,4 @@ Built by DarkMatter (https://darkmatterhub.ai). Implements
 Context Passport v1.0 (https://contextpassport.com).
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

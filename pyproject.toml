@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "darkmatter-claude-code"
-version = "0.1.0"
+version = "0.1.1"
 description = "Auto-capture every Claude Code action as a verifiable Context Passport record. Hooks into Claude Code's lifecycle and emits one signed, chained passport per tool use, user prompt, and assistant turn."
 readme = "README.md"
 license = { text = "Apache-2.0" }

@@ -52,11 +52,20 @@ def get_latest(session_id: str) -> Optional[dict]:
 
 
 def append(session_id: str, passport: dict) -> None:
-    """Append the passport to the chain log and update latest.json."""
+    """Append the passport to the chain log and update latest.json atomically.
+
+    chain.jsonl is append-only and durable per write. latest.json is updated
+    via os.replace on a temp file so that a process kill between the two
+    writes cannot leave latest.json out of sync with chain.jsonl (which
+    would corrupt the chain by making the next hook chain from the wrong
+    parent).
+    """
     d = session_dir(session_id)
     with open(d / "chain.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(passport) + "\n")
-    (d / "latest.json").write_text(json.dumps(passport, indent=2), encoding="utf-8")
+    tmp = d / "latest.json.tmp"
+    tmp.write_text(json.dumps(passport, indent=2), encoding="utf-8")
+    os.replace(tmp, d / "latest.json")
 
 
 def read_chain(session_id: str) -> list[dict]:
